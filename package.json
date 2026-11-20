@@ -1,0 +1,15 @@
+{
+  "name": "e2ee-group-chat",
+  "version": "1.0.0",
+  "description": "End-to-end encrypted group chat with epoch-based membership changes (server sees only ciphertext)",
+  "type": "module",
+  "scripts": {
+    "build": "tsc && node scripts/copy-public.mjs",
+    "start": "node dist/server/server.js",
+    "test": "tsc && node --test dist/tests/"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "typescript": "^5.7.2"
+  }
+}

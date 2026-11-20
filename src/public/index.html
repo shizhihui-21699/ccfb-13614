@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>E2EE 群聊演示 — Epoch + Sender Key</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <h1>端到端加密群聊 <span class="sub">Epoch + Sender-Key Ratchet</span></h1>
+        <p class="threat">
+          服务器只存储/转发不透明密文 · 新人看不到入群前消息 · 被踢者解不开新消息 · 设备被盗可旋转密钥恢复
+        </p>
+      </div>
+      <div class="top-actions">
+        <span id="group-badge" class="badge">未建群</span>
+        <button id="btn-reset" class="btn danger small">重置演示</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="panel setup-panel">
+        <h2>1 · 成员设备（每个卡片是独立密钥库，互不知道任何共享秘密）</h2>
+        <div class="row">
+          <input id="new-member-name" class="input" placeholder="新成员名称，如 Dave" />
+          <button id="btn-add-member" class="btn">创建设备</button>
+          <button id="btn-bootstrap" class="btn primary" title="创建 Alice/Bob/Carol 三个设备并由 Alice 建群">
+            一键初始化 3 人群
+          </button>
+        </div>
+        <div id="member-cards" class="cards"></div>
+      </section>
+
+      <section class="panel">
+        <h2>2 · 群操作（管理员发起，每个 Commit 生成全新随机 Epoch Secret 并按人 ECIES 封装）</h2>
+        <div class="row wrap">
+          <select id="sel-add" class="input"></select>
+          <button id="btn-add" class="btn">加人（新 Epoch）</button>
+          <select id="sel-remove" class="input"></select>
+          <button id="btn-remove" class="btn warn">踢人（新 Epoch）</button>
+          <select id="sel-rotate" class="input"></select>
+          <button id="btn-rotate" class="btn">模拟设备被盗 → 换密钥并 Rotate</button>
+        </div>
+        <p class="hint">
+          加人/踢人均为 O(n) 次公钥封装，<b>没有任何两两协商</b>；发消息是 O(1) 对称运算。
+        </p>
+      </section>
+
+      <section class="panel attacker-panel">
+        <h2>3 · 旁路攻击工具（拿到被盗设备的完整私钥 + 服务器全量磁盘转储）</h2>
+        <div class="row wrap">
+          <select id="sel-attacker" class="input"></select>
+          <button id="btn-attack" class="btn danger">用该设备的密钥发起离线攻击</button>
+          <button id="btn-export" class="btn small">导出该设备密钥（模拟窃走）</button>
+        </div>
+        <div id="attack-report" class="report"></div>
+      </section>
+
+      <section class="panel">
+        <h2>4 · 服务器视角（relay 磁盘上的原始内容 — 全部为密文/不透明 blob）</h2>
+        <details>
+          <summary class="btn small">查看服务器存储的原始事件</summary>
+          <pre id="server-view" class="server-view">（暂无）</pre>
+        </details>
+      </section>
+    </main>
+
+    <script type="module" src="/client/web/app.js"></script>
+  </body>
+</html>
